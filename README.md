@@ -1,3 +1,6 @@
+</br>
+</br>
+</br>
 
 <p align="center"><img src="https://user-images.githubusercontent.com/59385491/121659862-ae8d2180-cadd-11eb-8d6c-b7b09efe0837.png" height=150 > </p>
 
@@ -68,3 +71,7 @@
 
 ## 7. 추가 확인사항
 - 앱 내 반응형 웹뷰 구현 가능성 여부 
+
+</br>
+</br>
+</br>
