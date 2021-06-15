@@ -269,14 +269,19 @@ class BoardDetails extends React.Component {
                 : <div className="m-4 text-center">게시글이 없습니다.</div>
               }
               <div>
+                <div className="fw-bold">전체 댓글 {comments.length}개</div>
                 {comments.length
                   ?
                     ( comments.map((c, i) => {
-                        <div>
-                          <div>{c.nickname}</div>
-                          <div>{c.content}</div>
+                      return(
+                        <div className="d-flex">
+                        <div className="d-flex border">
+                          <div className="border" style={{width: "100px"}}>{c.nickname}</div>
+                          <div className="">{c.content}</div>
                         </div>
-                    
+                        <div className="border" style={{width: "100px"}}>{c.likeCount}</div>
+                        </div>
+                      );
                       })
                     )
                   :
