@@ -190,6 +190,7 @@ class BoardDetails extends React.Component {
     let commentIdx = Number(e.target.value);
     try {
       let req = this._createLikeComment(commentIdx);
+      // x-www-form-urlencoded 형식으로 request body 변환 필요
       const result = API.db.post(req.pathname, {
         ...req.params,
         withCredentials: true,
