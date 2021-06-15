@@ -17,8 +17,8 @@ class App extends React.Component {
       <BrowserRouter>
         <Switch>
           {/* <Route path="/board/:communityIdx"  render={(props) => <VBoard        {...props}/>}/> */}
-          <Route path="/board/:postIdx"       render={(props) => <BoardDetails {...props}/>}/>
           <Route path="/board/write"          render={(props) => <BoardWrite   {...props}/>}/>
+          <Route path="/board/:postIdx"       render={(props) => <BoardDetails {...props}/>}/>
           <Route path="/board"                render={(props) => <Board        {...props}/>}/>
           <Route path="/"                     render={(props) => <Redirect to="/board" />}/>
         </Switch>

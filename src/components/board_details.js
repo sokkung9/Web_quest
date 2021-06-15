@@ -1,5 +1,6 @@
 import React from 'react';
 import API from '../api/api';
+import { Link } from "react-router-dom";
 
 class BoardDetails extends React.Component {
   constructor(props) {
@@ -16,6 +17,8 @@ class BoardDetails extends React.Component {
       comments: [],
     };
 
+    this.defaultPageForComments = 0;
+
     this._handleInputChange = this._handleInputChange.bind(this);
     this._toggleForEditing = this._toggleForEditing.bind(this);
     this._editPost = this._editPost.bind(this);
@@ -30,7 +33,7 @@ class BoardDetails extends React.Component {
   async _asyncWorks() {
     this.setState({ isLoading: true });
     let postIdx = this.props.match.params.postIdx;
-    let page = this.props.location.state.page;
+    let page = this.defaultPageForComments;
 
     let [ postDetails, comments] = await Promise.all([
       this._getPostDetails(postIdx),
@@ -71,18 +74,18 @@ class BoardDetails extends React.Component {
     let pathname = '/comment/post';
     if (postIdx)
       pathname += `/${postIdx}`;
-    if (page)
+    if (page !== void 0)
       pathname += `/${page}`;
 
     return { pathname };
   }
 
   async _getComments(postIdx, page) {
-    if (!postIdx || !page)
+    if (!postIdx || page === void 0)
       return;
     try {
       let req = this._readComments(postIdx, page);
-      const comments = await API.db.get(req.pathname, { withCredentials: true }).then(res => (res.data.data || []));
+      const comments = await API.db.get(req.pathname, { withCredentials: true }).then(res => (res.data.data.data || []));
       return comments;
     } catch (e) {
       console.debug('BoardDetails._getComments()', e)
@@ -111,6 +114,7 @@ class BoardDetails extends React.Component {
       this._updatePost(),
     ]);
     if (isSucceed[0].success) {
+      window.location.reload();
       alert('글이 수정되었습니다.');
       this._toggleForEditing();
     }
@@ -176,15 +180,23 @@ class BoardDetails extends React.Component {
 
   render() {
     let postDetails = this.state.postDetails;
+    let comments = this.state.comments;
+    console.log("comments===", comments);
     let isEditingMode = this.state.isEditingMode;
+    
     return (
       <React.Fragment>
-        <div className="m-3 fw-bold">글 상세보기</div>
+        <div className="d-flex flex-column">
+          <div className="m-3 fw-bold">글 상세보기</div>
+          <Link to={{pathname: '/board'}}>
+            <button className="btn btn-light border-dark m-3">목록</button>
+          </Link>
+        </div>
         {this.state.isLoading
           ? 
-            <div>로딩 중입니다.</div>
+            <div className="m-3">로딩 중입니다.</div>
           : 
-            <div className="flex-column m-3">
+            <div className="flex-column ms-3">
               {postDetails
                 ? (!isEditingMode)
                   ? (
@@ -256,6 +268,21 @@ class BoardDetails extends React.Component {
                   )
                 : <div className="m-4 text-center">게시글이 없습니다.</div>
               }
+              <div>
+                {comments.length
+                  ?
+                    ( comments.map((c, i) => {
+                        <div>
+                          <div>{c.nickname}</div>
+                          <div>{c.content}</div>
+                        </div>
+                    
+                      })
+                    )
+                  :
+                    null
+                }
+              </div>
             </div>
         }
       </React.Fragment>

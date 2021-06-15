@@ -1,5 +1,6 @@
 import React from 'react';
 import API from '../api/api';
+import { Link } from 'react-router-dom';
 
 class BoardWrite extends React.Component {
   constructor(props) {
@@ -120,7 +121,10 @@ class BoardWrite extends React.Component {
             </div>
           </div>
           <div className="d-flex">
-            <button className="btn btn-light border-dark" onClick={this._submit}>저장</button>
+            <button className="me-2 btn btn-light border-dark" onClick={this._submit}>저장</button>
+            <Link to={{pathname: '/board'}}>
+              <button className="btn btn-light border-dark">목록</button>
+            </Link>
           </div>
         </div>
       </React.Fragment>

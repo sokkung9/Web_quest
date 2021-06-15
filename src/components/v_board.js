@@ -19,6 +19,17 @@ class VBoard extends React.Component {
     this._asyncWorks();
   }
   
+  componentDidUpdate(prevProps, prevState) {
+    if ((prevProps.communityIdx !== this.props.communityIdx)) {
+      this._asyncWorks();
+    }
+    // console.log("cdu 호출")
+    // console.log("~~~1prevProps===", prevProps);
+    // console.log("~~~1prevState===", prevState);
+    // console.log("~~~2props===", this.props);
+    // console.log("~~~2state===", this.state);
+  }
+  
   async _asyncWorks() {
     this.setState({ isLoading: true });
 
@@ -43,12 +54,13 @@ class VBoard extends React.Component {
 
   async _getAllPost(page) {
     const communityIdx = this.props.communityIdx;
-    let defaultPage = 1;
+    let defaultPage = this.state.lastPage;
 
     if (page)
       defaultPage = page;
     try {
       let req = this._readAllPost(communityIdx, defaultPage);
+      console.log("req===", req);
       const allPost = await API.db.get(req.pathname, {
         withCredentials: true,
       }).then(res => (res.data.data.data || []));
@@ -72,6 +84,8 @@ class VBoard extends React.Component {
   render() {
     let allPost = this.state.allPost;
     let lastPage = this.state.lastPage;
+    // console.log("render의 allPost===", allPost);
+    // console.log("render의 lastPage===", lastPage);
     
     return (
       <React.Fragment>
@@ -91,19 +105,21 @@ class VBoard extends React.Component {
               <div className="d-flex justify-content-center border bg-light">
                 <div className="flex-shrink-0 text-center" style={{width: "70px"}}>번호</div>
                 <div className="ms-3 flex-fill text-center">제목</div>
-                <div className="ms-3 flex-shrink-0 text-center" style={{width: "70px"}}>작성자</div>
-                <div className="ms-3 flex-shrink-0 text-center" style={{width: "180px"}}>작성일</div>
+                <div className="ms-3 flex-shrink-0 text-center" style={{width: "100px"}}>작성자</div>
+                <div className="ms-3 flex-shrink-0 text-center" style={{width: "175px"}}>작성일</div>
                 <div className="ms-3 flex-shrink-0 text-center" style={{width: "70px"}}>좋아요 수</div>
               </div>
               {allPost.length ? 
                 allPost.map((p, i) =>
                   <div key={i} className="d-flex jusfity-content-center border">
                     <div className="flex-shrink-0 text-center" style={{width: "70px"}}>{p.postIdx}</div>
-                    <Link to={{pathname: `/board/${p.postIdx}`, state: { page: lastPage }}} className="ms-3 flex-fill text-start text-decoration-none text-dark">
+                    <Link to={{pathname: `/board/${p.postIdx}`, state: { page: lastPage }}}
+                      className="ms-3 flex-fill text-start text-decoration-none text-dark"
+                    >
                       <div>{p.title}</div>
                     </Link>
-                    <div className="ms-3 flex-shrink-0 text-center" style={{width: "70px"}}>{p.nickname}</div>
-                    <div className="ms-3 flex-shrink-0 text-center" style={{width: "180px"}}>{p.createdAt}</div>
+                    <div className="ms-3 flex-shrink-0 text-center" style={{width: "100px"}}>{p.nickname}</div>
+                    <div className="ms-3 flex-shrink-0 text-center" style={{width: "175px"}}>{p.createdAt}</div>
                     <div className="ms-3 flex-shrink-0 text-center" style={{width: "70px"}}>{p.likeCount}</div>
                   </div>
                 )
