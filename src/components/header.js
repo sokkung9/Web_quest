@@ -33,7 +33,12 @@ class Header extends React.Component {
       <div>
         {communities.map((c, i) => {
           return (
-            <button key={i} value={c.communityIdx} className="btn btn-info fw-bold mx-1" style={{color: "white"}} onClick={this.props._handleChangeCommunityIdx}>{c.communityName}</button>
+            <button key={i} value={c.communityIdx}
+              className="btn btn-info fw-bold mx-1" style={{color: "white"}}
+              onClick={this.props._handleChangeCommunityIdx}
+            >
+              {c.communityName}
+            </button>
           );
         })}
       </div>

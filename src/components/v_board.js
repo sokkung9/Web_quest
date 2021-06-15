@@ -23,11 +23,6 @@ class VBoard extends React.Component {
     if ((prevProps.communityIdx !== this.props.communityIdx)) {
       this._asyncWorks();
     }
-    // console.log("cdu 호출")
-    // console.log("~~~1prevProps===", prevProps);
-    // console.log("~~~1prevState===", prevState);
-    // console.log("~~~2props===", this.props);
-    // console.log("~~~2state===", this.state);
   }
   
   async _asyncWorks() {
@@ -54,13 +49,12 @@ class VBoard extends React.Component {
 
   async _getAllPost(page) {
     const communityIdx = this.props.communityIdx;
-    let defaultPage = this.state.lastPage;
+    let defaultPage = this.props.page;
 
     if (page)
       defaultPage = page;
     try {
       let req = this._readAllPost(communityIdx, defaultPage);
-      console.log("req===", req);
       const allPost = await API.db.get(req.pathname, {
         withCredentials: true,
       }).then(res => (res.data.data.data || []));
@@ -84,8 +78,6 @@ class VBoard extends React.Component {
   render() {
     let allPost = this.state.allPost;
     let lastPage = this.state.lastPage;
-    // console.log("render의 allPost===", allPost);
-    // console.log("render의 lastPage===", lastPage);
     
     return (
       <React.Fragment>

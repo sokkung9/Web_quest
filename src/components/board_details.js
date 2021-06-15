@@ -24,6 +24,7 @@ class BoardDetails extends React.Component {
     this._editPost = this._editPost.bind(this);
     this._cancleEditPost = this._cancleEditPost.bind(this);
     this._deletePost = this._deletePost.bind(this);
+    this._likeComment = this._likeComment.bind(this);
   }
 
   componentDidMount() {
@@ -139,11 +140,6 @@ class BoardDetails extends React.Component {
         ...req.params,
         withCredentials: true,
       }).then(res => res.data || []);
-      // console.log("result===", result);
-      // if (result.success)
-      //   return true;
-      // else
-      //   return false;
       return result;
     } catch (e) {
       console.debug('BoardDetails._updatePost()', e);
@@ -178,10 +174,39 @@ class BoardDetails extends React.Component {
     }
   }
 
+  _createLikeComment(commentIdx) {
+    let postIdx = this.state.postDetails.postIdx;
+    let pathname = '/community/postLike';
+    let params = {
+      "postIdx": postIdx,
+      "commentIdx": commentIdx,
+    }
+      
+    return { pathname, params };
+  }
+
+
+  _likeComment(e) {
+    let commentIdx = Number(e.target.value);
+    try {
+      let req = this._createLikeComment(commentIdx);
+      const result = API.db.post(req.pathname, {
+        ...req.params,
+        withCredentials: true,
+      }).then(res => res.data || []);
+      if (result.success)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      console.debug('Board._postPost()', e);
+      return [];
+    }
+  }
+
   render() {
     let postDetails = this.state.postDetails;
     let comments = this.state.comments;
-    console.log("comments===", comments);
     let isEditingMode = this.state.isEditingMode;
     
     return (
@@ -196,7 +221,7 @@ class BoardDetails extends React.Component {
           ? 
             <div className="m-3">로딩 중입니다.</div>
           : 
-            <div className="flex-column ms-3">
+            <div className="flex-column mx-3">
               {postDetails
                 ? (!isEditingMode)
                   ? (
@@ -222,7 +247,7 @@ class BoardDetails extends React.Component {
                       </div>
                       <div className="mt-3 d-flex justify-content-end">
                         <button className="me-1 btn btn-light border-dark" onClick={this._toggleForEditing}>수정</button>
-                        <button className="btn btn-light border-dark" onClick={this._deletePost}>삭제</button>
+                        <button className="me-2 btn btn-light border-dark" onClick={this._deletePost}>삭제</button>
                       </div>
                     </div>
                   ) :
@@ -262,7 +287,7 @@ class BoardDetails extends React.Component {
                       </div>
                       <div className="mt-3 d-flex justify-content-end">
                         <button className="me-1 btn btn-light border-dark" onClick={this._editPost}>수정 완료</button>
-                        <button className="btn btn-light border-dark" onClick={this._cancleEditPost}>취소</button>
+                        <button className="me-2 btn btn-light border-dark" onClick={this._cancleEditPost}>취소</button>
                       </div>
                     </div>
                   )
@@ -270,24 +295,23 @@ class BoardDetails extends React.Component {
               }
               <div>
                 <div className="fw-bold">전체 댓글 {comments.length}개</div>
-                {comments.length
-                  ?
-                    ( comments.map((c, i) => {
-                      return(
-                        <div className="d-flex">
-                        <div className="d-flex border">
-                          <div className="border" style={{width: "100px"}}>{c.nickname}</div>
-                          <div className="">{c.content}</div>
-                        </div>
-                        <div className="border" style={{width: "100px"}}>{c.likeCount}</div>
-                        </div>
-                      );
-                      })
-                    )
-                  :
-                    null
-                }
-              </div>
+                  {comments.length
+                    ?
+                      ( comments.map((c, i) => {
+                        return(
+                          <div key={c.commentIdx} className="d-flex border">
+                            <div className="border" style={{width: "100px"}}>{c.nickname}</div>
+                            <div className="flex-fill">{c.content}</div>
+                            <div className="border" style={{width: "100px"}}>좋아요 {c.likeCount}</div>
+                            <button className="btn btn-light" onClick={this._likeComment} value={c.commentIdx}>좋아요</button>
+                          </div>
+                        );
+                        })
+                      )
+                    :
+                      null
+                  }
+                </div>
             </div>
         }
       </React.Fragment>

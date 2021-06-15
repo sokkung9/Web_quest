@@ -9,6 +9,7 @@ class Board extends React.Component {
     this.state = {
       communityIdx: 1,
       communityName: '자유게시판',
+      page: 1,
     };
 
     this._handleChangeCommunityIdx = this._handleChangeCommunityIdx.bind(this);
@@ -26,7 +27,10 @@ class Board extends React.Component {
       <div className="m-3">
         <div className="m-3 fw-bold">포켓유니브 게시판</div>
         <Header _handleChangeCommunityIdx={this._handleChangeCommunityIdx}/>
-        <VBoard communityIdx={this.state.communityIdx} communityName={this.state.communityName}/>
+        <VBoard communityIdx={this.state.communityIdx}
+          communityName={this.state.communityName}
+          page={this.state.page}
+        />
       </div>
     );
   }
